@@ -2,6 +2,8 @@
 
 `EdgeCloud-DigitalTwin` is a complete Python project that simulates an aerospace predictive-maintenance pipeline using an edge-cloud digital twin architecture. It generates live telemetry, performs low-latency anomaly screening at the edge, sends richer analysis to the cloud, and dynamically orchestrates where work runs based on system conditions.
 
+For a complete combined product overview, developer onboarding guide, setup manual, architecture explanation, and stakeholder-friendly summary, see [docs/PROJECT_GUIDE.md](C:\Users\kiran\Details of Your Vehicle\EdgeCloud-DigitalTwin\docs\PROJECT_GUIDE.md).
+
 ## Features
 
 - Synthetic aerospace telemetry with realistic drift, noise, spikes, and threshold breaches
