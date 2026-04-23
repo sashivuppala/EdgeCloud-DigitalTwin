@@ -22,6 +22,8 @@ class EdgeProcessor:
     def process(self, event: PipelineEvent, processing_location: str) -> ProcessedRecord:
         """Run fast validation and operational checks."""
 
+        # TODO(stage-2-ai): Replace or augment threshold rules with a compact edge anomaly model.
+
         start = perf_counter()
         anomaly_types: list[str] = []
         score = 0.0

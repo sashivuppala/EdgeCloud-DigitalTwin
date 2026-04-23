@@ -92,10 +92,12 @@ It tracks:
 
 - total events processed
 - failed events
+- pending events
 - validation issue trends
 - retry storm risk
 - backlog severity
 - publish health
+- average processing time
 - overall health score
 - overall status
 
@@ -193,6 +195,7 @@ Exposes:
 - `POST /sensor-data` as a compatibility alias
 - `GET /status`
 - `GET /metrics`
+- `GET /health`
 
 ### `dashboard.py`
 
@@ -452,6 +455,18 @@ python -m pytest -q tests/test_system.py
 ### Test result note for documentation
 
 The current recorded outcome for this refactor run was a clean pass across all seven tests after installing the required packages.
+
+## 18. AI-Ready Extension Points
+
+The codebase includes explicit Stage 2 upgrade points for:
+
+- edge anomaly detection models
+- orchestration policy learning
+- model drift detection
+- retraining workflows
+- explainability outputs for routing and anomaly decisions
+
+These are intentionally left as extension markers so the Stage 1 implementation stays clean and maintainable.
 
 ## 15. Developer Walkthrough
 

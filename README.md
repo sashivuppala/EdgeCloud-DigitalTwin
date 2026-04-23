@@ -2,7 +2,7 @@
 
 `EdgeCloud-DigitalTwin` is a digital twin and orchestration system for enterprise processing pipelines. It simulates distributed document and workflow processing, routes work between edge and cloud layers, maintains a live pipeline health model, and exposes metrics, logs, and dashboards for operational monitoring.
 
-For a complete combined product overview, developer onboarding guide, setup manual, architecture explanation, and stakeholder-friendly summary, see [docs/PROJECT_GUIDE.md](C:\Users\kiran\Details of Your Vehicle\EdgeCloud-DigitalTwin\docs\PROJECT_GUIDE.md).
+For a complete combined product overview, developer onboarding guide, setup manual, architecture explanation, and stakeholder-friendly summary, see [docs/PROJECT_GUIDE.md](docs/PROJECT_GUIDE.md).
 
 ## Project Purpose
 
@@ -114,6 +114,7 @@ The orchestration engine routes work based on:
 - retry count
 - publish failure risk
 - backlog severity
+- downstream acknowledgment delay
 
 Example routing reasons include:
 
@@ -128,12 +129,14 @@ The digital twin maintains a live workflow-level state including:
 
 - total events processed
 - failed events
+- pending events
 - anomaly count
 - validation issue trend
 - retry storm risk
 - backlog severity
 - publish health
-- health score
+- average processing time
+- overall pipeline health score
 - overall status: `HEALTHY`, `DEGRADED`, or `CRITICAL`
 
 ## Project Structure
@@ -238,6 +241,10 @@ Returns the current pipeline digital twin state.
 
 Returns aggregate pipeline metrics.
 
+### `GET /health`
+
+Returns a compact workflow health view for readiness and operational checks.
+
 ## Dashboard Usage
 
 Launch the dashboard:
@@ -250,12 +257,14 @@ The dashboard shows:
 
 - total pipeline events
 - pipeline health score
+- healthy / degraded / critical state visibility
 - queue backlog trend
 - retry count trend
-- publish status distribution
+- publish failure count and publish status distribution
 - processing and acknowledgement trend
 - routing distribution
 - top anomaly reasons
+- recent event log
 
 ## Running Tests
 
@@ -303,4 +312,4 @@ docker run -p 8000:8000 edgecloud-digitaltwin
 
 - SQLite logs are stored by default at `edgecloud_digital_twin.db`
 - Cloud retraining uses `IsolationForest` when `scikit-learn` is installed
-- Orchestration thresholds can be tuned in [utils/config.py](C:\Users\kiran\Details of Your Vehicle\EdgeCloud-DigitalTwin\utils\config.py)
+- Orchestration thresholds can be tuned in [utils/config.py](utils/config.py)

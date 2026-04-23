@@ -62,12 +62,14 @@ class DigitalTwinState(BaseModel):
     last_updated: datetime = Field(default_factory=utc_now)
     total_events_processed: int = 0
     failed_events: int = 0
+    pending_events: int = 0
     anomaly_count: int = 0
     validation_issue_trend: float = 0.0
     retry_storm_risk: float = 0.0
     backlog_severity: float = 0.0
     publish_health: float = 1.0
     health_score: float = 1.0
+    overall_pipeline_health_score: float = 1.0
     average_processing_time_ms: float = 0.0
     average_queue_depth: float = 0.0
     average_retry_count: float = 0.0

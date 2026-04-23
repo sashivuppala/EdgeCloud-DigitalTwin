@@ -35,7 +35,9 @@ def initialize_database(connection: sqlite3.Connection) -> None:
             publish_status TEXT NOT NULL,
             downstream_ack_delay_ms REAL NOT NULL,
             scenario TEXT NOT NULL,
-            processing_location TEXT NOT NULL
+            processing_location TEXT NOT NULL,
+            twin_health_score REAL NOT NULL,
+            twin_status TEXT NOT NULL
         );
 
         CREATE TABLE IF NOT EXISTS anomaly_logs (
@@ -58,4 +60,15 @@ def initialize_database(connection: sqlite3.Connection) -> None:
         );
         """
     )
+    _ensure_column(cursor, "pipeline_events", "twin_health_score", "REAL NOT NULL DEFAULT 1.0")
+    _ensure_column(cursor, "pipeline_events", "twin_status", "TEXT NOT NULL DEFAULT 'HEALTHY'")
     connection.commit()
+
+
+def _ensure_column(cursor: sqlite3.Cursor, table_name: str, column_name: str, column_definition: str) -> None:
+    """Add a missing column to an existing table for in-place schema upgrades."""
+
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    existing_columns = {row[1] for row in cursor.fetchall()}
+    if column_name not in existing_columns:
+        cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_definition}")

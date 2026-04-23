@@ -20,8 +20,11 @@ class OrchestrationEngine:
         retry_count: int,
         publish_failure_risk: bool,
         backlog_severity: float,
+        downstream_ack_delay_ms: float,
     ) -> OrchestrationDecision:
         """Apply enterprise workflow orchestration rules."""
+
+        # TODO(stage-2-ai): Introduce learned orchestration policy with explainable routing output.
 
         if processing_time_ms <= self.config.processing_time_edge_threshold_ms and queue_depth < self.config.queue_backlog_threshold and not requires_complex_analysis:
             return OrchestrationDecision(
@@ -50,7 +53,15 @@ class OrchestrationEngine:
         if publish_failure_risk:
             return OrchestrationDecision(
                 location="cloud",
-                reason="publish failure risk escalated to cloud",
+                reason="publish failure pattern requires cloud-level investigation",
+                processing_time_ms=processing_time_ms,
+                queue_depth=queue_depth,
+                requires_complex_analysis=True,
+            )
+        if downstream_ack_delay_ms >= self.config.downstream_ack_delay_threshold_ms:
+            return OrchestrationDecision(
+                location="cloud",
+                reason="downstream acknowledgement delay requires centralized analysis",
                 processing_time_ms=processing_time_ms,
                 queue_depth=queue_depth,
                 requires_complex_analysis=True,

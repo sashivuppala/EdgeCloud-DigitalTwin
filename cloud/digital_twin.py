@@ -57,6 +57,8 @@ class CloudDigitalTwin:
             "recommended_action": "stabilize_pipeline" if deep_score > 0.55 else "continue_processing",
         }
         self.update_state(record, deep_score)
+        record.cloud_analysis["pipeline_status"] = self.state.status
+        record.cloud_analysis["overall_pipeline_health_score"] = self.state.overall_pipeline_health_score
 
         if len(self.history) >= self.config.retrain_window and len(self.history) % 25 == 0:
             self.retrain_model()
@@ -101,6 +103,8 @@ class CloudDigitalTwin:
         if IsolationForest is None:
             return
 
+        # TODO(stage-2-ai): Plug in retraining workflow orchestration and model drift checks.
+
         frame = pd.DataFrame(list(self.history)[-self.config.retrain_window :])
         if len(frame) < 40:
             return
@@ -129,6 +133,7 @@ class CloudDigitalTwin:
         anomaly_count = self.state.anomaly_count + int(record.anomaly_detected)
         total_events_processed = self.state.total_events_processed + 1
         failed_events = self.state.failed_events + int(record.event.publish_status != "SUCCESS")
+        pending_events = self.state.pending_events + int(record.event.publish_status == "PENDING")
 
         if history_frame.empty:
             averages = {
@@ -162,12 +167,14 @@ class CloudDigitalTwin:
             last_updated=utc_now(),
             total_events_processed=total_events_processed,
             failed_events=failed_events,
+            pending_events=pending_events,
             anomaly_count=anomaly_count,
             validation_issue_trend=round(validation_issue_trend, 3),
             retry_storm_risk=round(retry_storm_risk, 3),
             backlog_severity=round(backlog_severity, 3),
             publish_health=round(publish_health, 3),
             health_score=round(health_score, 4),
+            overall_pipeline_health_score=round(health_score, 4),
             average_processing_time_ms=round(float(averages.get("processing_time_ms", 0.0)), 3),
             average_queue_depth=round(float(averages.get("queue_depth", 0.0)), 3),
             average_retry_count=round(float(averages.get("retry_count", 0.0)), 3),

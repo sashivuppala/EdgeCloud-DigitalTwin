@@ -126,8 +126,11 @@ def test_api_endpoints() -> None:
     post_response = client.post("/pipeline-event", json=payload)
     assert post_response.status_code == 200
     assert post_response.json()["document_id"] == "DOC-API-001"
+    assert "digital_twin_state" in post_response.json()
 
     status_response = client.get("/status")
     metrics_response = client.get("/metrics")
+    health_response = client.get("/health")
     assert status_response.status_code == 200
     assert metrics_response.status_code == 200
+    assert health_response.status_code == 200

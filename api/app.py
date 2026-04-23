@@ -29,7 +29,8 @@ def ingest_pipeline_event(record: PipelineEvent) -> dict:
         "routing_reason": decision.reason,
         "anomaly_detected": processed.anomaly_detected,
         "anomaly_types": processed.anomaly_types,
-        "pipeline_status": system.get_state().status,
+        "pipeline_health": system.get_state().overall_pipeline_health_score,
+        "digital_twin_state": system.get_state().model_dump(mode="json"),
         "document_id": record.document_id,
     }
 
@@ -45,7 +46,8 @@ def ingest_sensor_data(record: PipelineEvent) -> dict:
         "routing_reason": decision.reason,
         "anomaly_detected": processed.anomaly_detected,
         "anomaly_types": processed.anomaly_types,
-        "digital_twin_status": system.get_state().status,
+        "pipeline_health": system.get_state().overall_pipeline_health_score,
+        "digital_twin_state": system.get_state().model_dump(mode="json"),
     }
 
 
@@ -61,3 +63,17 @@ def get_metrics() -> dict:
     """Return aggregate metrics."""
 
     return system.get_metrics().model_dump(mode="json")
+
+
+@app.get("/health")
+def get_health() -> dict:
+    """Return a compact health view for operational checks."""
+
+    state = system.get_state()
+    return {
+        "status": state.status,
+        "overall_pipeline_health_score": state.overall_pipeline_health_score,
+        "processing_readiness": "READY" if state.status != "CRITICAL" else "ATTENTION_REQUIRED",
+        "failed_events": state.failed_events,
+        "pending_events": state.pending_events,
+    }

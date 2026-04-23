@@ -20,14 +20,17 @@ class TelemetryRepository:
         """Persist pipeline event and anomaly data."""
 
         event = record.event
+        twin_health_score = float(record.cloud_analysis.get("overall_pipeline_health_score", 1.0))
+        twin_status = str(record.cloud_analysis.get("pipeline_status", "HEALTHY"))
         cursor = self.connection.cursor()
         cursor.execute(
             """
             INSERT INTO pipeline_events (
                 timestamp, document_id, document_type, document_size_kb, xml_complexity,
                 validation_error_count, processing_time_ms, queue_depth, retry_count,
-                transform_latency_ms, publish_status, downstream_ack_delay_ms, scenario, processing_location
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                transform_latency_ms, publish_status, downstream_ack_delay_ms, scenario, processing_location,
+                twin_health_score, twin_status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 event.timestamp.isoformat(),
@@ -44,6 +47,8 @@ class TelemetryRepository:
                 event.downstream_ack_delay_ms,
                 event.scenario,
                 record.processing_location,
+                twin_health_score,
+                twin_status,
             ),
         )
         cursor.execute(
@@ -90,7 +95,7 @@ class TelemetryRepository:
         SELECT timestamp, document_id, document_type, document_size_kb, xml_complexity,
                validation_error_count, processing_time_ms, queue_depth, retry_count,
                transform_latency_ms, publish_status, downstream_ack_delay_ms,
-               scenario, processing_location
+               scenario, processing_location, twin_health_score, twin_status
         FROM pipeline_events
         ORDER BY id DESC
         LIMIT ?
@@ -122,6 +127,21 @@ class TelemetryRepository:
         query = """
         SELECT timestamp, location, reason, processing_time_ms, queue_depth, requires_complex_analysis
         FROM orchestration_logs
+        ORDER BY id DESC
+        LIMIT ?
+        """
+        frame = pd.read_sql_query(query, self.connection, params=(limit,))
+        if not frame.empty:
+            frame["timestamp"] = pd.to_datetime(frame["timestamp"], utc=True)
+        return frame
+
+    def fetch_recent_event_log(self, limit: int = 25) -> pd.DataFrame:
+        """Return recent event log entries for dashboard display."""
+
+        query = """
+        SELECT timestamp, document_id, document_type, queue_depth, retry_count,
+               processing_time_ms, publish_status, processing_location, twin_status
+        FROM pipeline_events
         ORDER BY id DESC
         LIMIT ?
         """

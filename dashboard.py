@@ -37,6 +37,9 @@ else:
     st.subheader("Processing and Acknowledgement Trend")
     st.line_chart(sensor_frame.set_index("timestamp")[["processing_time_ms", "transform_latency_ms", "downstream_ack_delay_ms"]])
 
+    st.subheader("Pipeline Health Score Trend")
+    st.line_chart(sensor_frame.set_index("timestamp")[["twin_health_score"]])
+
     st.subheader("Publish Status Distribution")
     publish_counts = sensor_frame["publish_status"].value_counts().rename_axis("publish_status").reset_index(name="count")
     st.bar_chart(publish_counts.set_index("publish_status"))
@@ -72,3 +75,9 @@ if not anomaly_frame.empty:
     display_frame = anomaly_frame.copy()
     display_frame["timestamp"] = pd.to_datetime(display_frame["timestamp"]).dt.strftime("%Y-%m-%d %H:%M:%S")
     st.dataframe(display_frame, use_container_width=True)
+
+event_log_frame = repository.fetch_recent_event_log(limit=20)
+if not event_log_frame.empty:
+    st.subheader("Recent Event Log")
+    event_log_frame["timestamp"] = pd.to_datetime(event_log_frame["timestamp"]).dt.strftime("%Y-%m-%d %H:%M:%S")
+    st.dataframe(event_log_frame, use_container_width=True)

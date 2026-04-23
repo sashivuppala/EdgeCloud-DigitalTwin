@@ -47,6 +47,7 @@ class EdgeCloudDigitalTwinSystem:
             retry_count=event.retry_count,
             publish_failure_risk=event.publish_status != "SUCCESS",
             backlog_severity=backlog_severity,
+            downstream_ack_delay_ms=event.downstream_ack_delay_ms,
         )
 
         processed = self.edge.process(event=event, processing_location=decision.location)
