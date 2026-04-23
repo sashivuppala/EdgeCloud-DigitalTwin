@@ -2,13 +2,13 @@
 
 ## 1. Purpose
 
-This guide is the primary help and about document for `EdgeCloud-DigitalTwin`.
+This guide serves as the main help and about document for `EdgeCloud-DigitalTwin`.
 
 It is written for:
 
-- engineering teams onboarding to the codebase
-- product and delivery teams who want a clear understanding of what the system does
-- stakeholders who need a concise explanation of architecture, simulation scope, and operational value
+- engineers onboarding to the codebase
+- product and delivery teams who need a clear understanding of the system
+- stakeholders who want a concise explanation of the architecture, scope, and operational value
 
 The project has been refactored in place into an enterprise software-oriented digital twin for distributed processing pipelines.
 
@@ -45,7 +45,7 @@ The system architecture was intentionally preserved while the domain model was r
 - cloud digital twin pattern
 - dashboard
 - SQLite logging
-- simulation runner
+- event-generation runner
 - Docker support
 - automated tests
 
@@ -104,7 +104,7 @@ It tracks:
 ## 5. Architecture
 
 ```text
-Input/Event Simulator
+Input/Event Generator
         |
         v
 Orchestration Engine
@@ -122,13 +122,13 @@ Orchestration Engine
 
 ### Conceptual inspiration
 
-This design aligns conceptually to large-scale enterprise processing environments where workflows include validation, transformation, publishing, retries, acknowledgements, and monitoring of queue-driven throughput.
+This design aligns to large-scale enterprise processing environments where workflows include validation, transformation, publishing, retries, acknowledgements, and monitoring of queue-driven throughput.
 
 ## 6. Main Components
 
 ### `simulator/generator.py`
 
-Generates enterprise workflow events and scenario-specific anomalies.
+Generates enterprise workflow events and scenario-specific anomalies. The folder name remains `simulator` to preserve the original project layout, but it now acts as the pipeline event generator for enterprise workflow traffic.
 
 Scenarios include:
 
@@ -177,6 +177,7 @@ Routing factors:
 - retry count
 - publish failure risk
 - backlog severity
+- downstream acknowledgment delay
 
 ### `database/db.py` and `database/repository.py`
 
@@ -208,6 +209,7 @@ Provides a monitoring view for:
 - publish distribution
 - routing distribution
 - recent anomalies
+- recent event activity
 
 ## 7. Event Schema
 
@@ -308,7 +310,7 @@ pip install -r requirements-ml.txt
 python main.py
 ```
 
-### Run a direct simulation
+### Run a direct event-generation flow
 
 ```bash
 python run_simulation.py --scenario normal_processing --iterations 40
@@ -320,13 +322,13 @@ python run_simulation.py --scenario normal_processing --iterations 40
 python run_simulation.py --scenario high_queue_backlog --iterations 40
 ```
 
-### Run malformed XML burst simulation
+### Run a malformed XML burst scenario
 
 ```bash
 python run_simulation.py --scenario malformed_xml_burst --iterations 40
 ```
 
-### Run retry storm simulation
+### Run a retry storm scenario
 
 ```bash
 python run_simulation.py --scenario retry_storm --iterations 40
@@ -377,6 +379,10 @@ Returns the current pipeline digital twin state.
 ### `GET /metrics`
 
 Returns operational metrics for the workflow platform.
+
+### `GET /health`
+
+Returns a compact health summary for readiness checks, operational dashboards, or external monitoring.
 
 ## 13. Database Design
 
@@ -452,19 +458,7 @@ python -m pytest -q tests/test_system.py
 
 ### Test result note for documentation
 
-The current recorded outcome for this refactor run was a clean pass across all seven tests after installing the required packages.
-
-## 18. AI-Ready Extension Points
-
-The codebase includes explicit Stage 2 upgrade points for:
-
-- edge anomaly detection models
-- orchestration policy learning
-- model drift detection
-- retraining workflows
-- explainability outputs for routing and anomaly decisions
-
-These are intentionally left as extension markers so the Stage 1 implementation stays clean and maintainable.
+The recorded outcome for this refactor run was a clean pass across all seven tests after installing the required packages.
 
 ## 15. Developer Walkthrough
 
@@ -496,4 +490,16 @@ Safe next steps:
 
 ## 17. Summary for Product and Delivery Teams
 
-`EdgeCloud-DigitalTwin` is now an enterprise pipeline digital twin that simulates how large-scale document and workflow systems behave under normal load and failure conditions. It captures validation issues, transformation bottlenecks, retries, backlog buildup, publication instability, and acknowledgement delays. The platform routes work intelligently across edge and cloud layers, maintains a live health model, and provides operational visibility through APIs, logs, and dashboards.
+`EdgeCloud-DigitalTwin` is an enterprise pipeline digital twin that simulates how large-scale document and workflow systems behave under normal load and failure conditions. It captures validation issues, transformation bottlenecks, retries, backlog buildup, publication instability, and acknowledgement delays. The platform routes work intelligently across edge and cloud layers, maintains a live health model, and provides operational visibility through APIs, logs, and dashboards.
+
+## 18. AI-Ready Extension Points
+
+The codebase includes explicit Stage 2 upgrade points for:
+
+- edge anomaly detection models
+- orchestration policy learning
+- model drift detection
+- retraining workflows
+- explainability outputs for routing and anomaly decisions
+
+These are intentionally left as extension markers so the Stage 1 implementation stays clean and maintainable.

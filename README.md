@@ -1,41 +1,41 @@
 # EdgeCloud-DigitalTwin: Digital Twin for Enterprise Processing Pipelines
 
-`EdgeCloud-DigitalTwin` is a digital twin and orchestration system for enterprise processing pipelines. It simulates distributed document and workflow processing, routes work between edge and cloud layers, maintains a live pipeline health model, and exposes metrics, logs, and dashboards for operational monitoring.
+`EdgeCloud-DigitalTwin` is a digital twin and orchestration system for enterprise processing pipelines. It models distributed document and workflow processing, routes work between edge and cloud layers, maintains a live pipeline health model, and exposes APIs, metrics, logs, and dashboards for operational visibility.
 
-For a complete combined product overview, developer onboarding guide, setup manual, architecture explanation, and stakeholder-friendly summary, see [docs/PROJECT_GUIDE.md](docs/PROJECT_GUIDE.md).
+For a detailed product and engineering guide, see [docs/PROJECT_GUIDE.md](docs/PROJECT_GUIDE.md).
 
 ## Project Purpose
 
-This project demonstrates how an enterprise document and event-processing platform can be modeled as an edge-cloud digital twin:
+This project demonstrates how a distributed enterprise processing platform can be represented as an edge-cloud digital twin:
 
-- the input simulator generates workflow events such as XML-heavy documents and publish operations
+- the input event generator produces workflow records such as XML-heavy documents, validation results, transformation timings, and publish outcomes
 - the edge validation layer performs low-latency validation and quick anomaly screening
-- the cloud analysis layer handles deeper trend analysis and digital twin state management
-- the orchestration engine decides where work should be processed based on backlog, latency, retry pressure, and complexity
-- the API, database, and dashboard provide visibility into pipeline health
+- the cloud analysis layer performs deeper trend analysis, workflow-state evaluation, and health scoring
+- the orchestration engine decides where work should be processed based on latency, backlog, retry pressure, and complexity
+- the API, database, and dashboard make the workflow state visible to operators and developers
 
-This architecture is designed for large-scale document and workflow processing platforms where validation, transformation, publishing, acknowledgement, and retry behavior must be monitored continuously.
+This design is aligned to enterprise workflow platforms where validation, transformation, publishing, acknowledgement, retries, and queue behavior must be monitored continuously.
 
 ## Domain Refactoring Note
 
-The architecture of the project remains the same as the earlier edge-cloud digital twin implementation, but the domain has been refocused to enterprise workflow and document processing. The simulator, digital twin, orchestration logic, dashboard, and documentation now model distributed pipeline operations consistently.
+The core edge-cloud architecture remains the same, but the domain has been refocused from generic telemetry-style processing to enterprise workflow and document processing. The event generator, digital twin, orchestration logic, dashboard, and documentation now model distributed pipeline operations consistently.
 
 ## Features
 
-- Enterprise pipeline event simulation for document ingestion and workflow execution
+- Enterprise pipeline event generation for document ingestion and workflow execution
 - Scenarios for queue backlog, malformed XML bursts, retry storms, transformation bottlenecks, and publish failures
 - Edge validation for lightweight parsing checks and quick anomaly detection
 - Cloud analysis for historical trend analysis, digital twin state updates, and optional retraining
 - Orchestration logic that routes work between edge and cloud based on queue depth, latency, retry pressure, and complexity
 - FastAPI endpoints for pipeline event ingestion, status, metrics, and health
 - SQLite logging for events, anomalies, and orchestration decisions
-- Streamlit dashboard for pipeline health and routing visibility
+- Streamlit dashboard for pipeline health, routing visibility, and recent event activity
 - Docker support and automated tests
 
 ## Architecture
 
 ```text
-Input/Event Simulator
+Input/Event Generator
         |
         v
 Orchestration Engine
@@ -53,7 +53,7 @@ Orchestration Engine
 
 ## Enterprise Event Model
 
-Each simulated pipeline event includes:
+Each pipeline event includes:
 
 - `document_id`
 - `document_type`
@@ -70,7 +70,7 @@ Each simulated pipeline event includes:
 
 ## Simulation Scenarios
 
-The simulator supports these enterprise pipeline scenarios:
+The event generator supports these enterprise pipeline scenarios:
 
 - `normal_processing`
 - `high_queue_backlog`
@@ -121,10 +121,11 @@ Example routing reasons include:
 - `complex transformation escalated to cloud`
 - `high backlog triggered cloud offload`
 - `retry storm risk requires centralized analysis`
+- `publish failure pattern requires cloud-level investigation`
 
 ## Pipeline Digital Twin Health Model
 
-The digital twin maintains a live workflow-level state including:
+The digital twin maintains a workflow-level state including:
 
 - total events processed
 - failed events
@@ -142,22 +143,22 @@ The digital twin maintains a live workflow-level state including:
 
 ```text
 edgecloud-digital-twin/
-├── api/
-├── cloud/
-├── database/
-├── docs/
-├── edge/
-├── orchestrator/
-├── simulator/
-├── tests/
-├── utils/
-├── dashboard.py
-├── Dockerfile
-├── main.py
-├── requirements.txt
-├── requirements-ml.txt
-├── run_simulation.py
-└── README.md
+|-- api/
+|-- cloud/
+|-- database/
+|-- docs/
+|-- edge/
+|-- orchestrator/
+|-- simulator/
+|-- tests/
+|-- utils/
+|-- dashboard.py
+|-- Dockerfile
+|-- main.py
+|-- requirements.txt
+|-- requirements-ml.txt
+|-- run_simulation.py
+`-- README.md
 ```
 
 ## Installation
@@ -204,7 +205,7 @@ API base URL:
 http://127.0.0.1:8000
 ```
 
-## Run the Simulator
+## Run the Event Generator
 
 Direct mode:
 
@@ -256,7 +257,7 @@ The dashboard shows:
 
 - total pipeline events
 - pipeline health score
-- healthy / degraded / critical state visibility
+- healthy, degraded, and critical state visibility
 - queue backlog trend
 - retry count trend
 - publish failure count and publish status distribution
@@ -273,7 +274,7 @@ python -m pytest -q tests/test_system.py
 
 ## Test Results
 
-The refactored test suite covers:
+The test suite covers:
 
 - normal enterprise processing
 - edge routing for low-latency validation
@@ -282,8 +283,6 @@ The refactored test suite covers:
 - retry storm escalation
 - publication failure effects on metrics and state
 - API endpoint behavior
-
-Expected validation output:
 
 Recorded validation result for this refactor:
 
