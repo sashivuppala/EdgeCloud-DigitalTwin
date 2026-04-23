@@ -5,14 +5,14 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
-from utils.system import EdgeCloudDigitalTwinSystem
+from utils.system import PipelineTwinPlatform
 
 st.set_page_config(page_title="EdgeCloud Pipeline Twin Dashboard", layout="wide")
 
 st.title("EdgeCloud Pipeline Digital Twin Dashboard")
 st.caption("Live operational view of enterprise workflow events, anomalies, routing decisions, and pipeline health.")
 
-system = EdgeCloudDigitalTwinSystem()
+system = PipelineTwinPlatform()
 repository = system.repository
 state = system.get_state()
 metrics = system.get_metrics()

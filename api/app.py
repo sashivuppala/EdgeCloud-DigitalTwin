@@ -5,10 +5,10 @@ from __future__ import annotations
 from fastapi import FastAPI
 
 from utils.models import PipelineEvent
-from utils.system import EdgeCloudDigitalTwinSystem
+from utils.system import PipelineTwinPlatform
 
 app = FastAPI(title="EdgeCloud-DigitalTwin", version="1.0.0")
-system = EdgeCloudDigitalTwinSystem()
+system = PipelineTwinPlatform()
 
 
 @app.get("/")

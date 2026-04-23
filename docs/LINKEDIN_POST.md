@@ -27,7 +27,7 @@ Tech stack used:
 What I liked most about this build:
 
 - clear separation between simulator, edge processing, cloud intelligence, orchestration, and API layers
-- realistic operational scenarios such as high latency, edge overload, and anomaly injection
+- realistic operational scenarios such as queue backlog spikes, malformed XML bursts, retry storms, and publication failures
 - both technical and stakeholder-friendly documentation for onboarding and demos
 
 This project is a strong prototype for demonstrating how enterprise workflow platforms can balance real-time responsiveness at the edge with richer operational analysis in the cloud.

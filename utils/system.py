@@ -12,8 +12,8 @@ from utils.metrics import MetricsTracker
 from utils.models import DigitalTwinState, OrchestrationDecision, PipelineEvent, ProcessedRecord
 
 
-class EdgeCloudDigitalTwinSystem:
-    """Coordinate simulator input, edge validation, cloud analysis, and logging."""
+class PipelineTwinPlatform:
+    """Coordinate event intake, validation, analysis, and pipeline state tracking."""
 
     def __init__(self, config: SystemConfig | None = None) -> None:
         self.config = config or SystemConfig()

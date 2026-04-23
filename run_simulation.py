@@ -6,7 +6,7 @@ import argparse
 from pprint import pprint
 
 from simulator.generator import PipelineEventSimulator, SCENARIOS
-from utils.system import EdgeCloudDigitalTwinSystem
+from utils.system import PipelineTwinPlatform
 
 
 def parse_args() -> argparse.Namespace:
@@ -25,7 +25,7 @@ def run_direct(scenario: str, iterations: int, interval: float) -> None:
     """Run a local simulation directly against the system class."""
 
     simulator = PipelineEventSimulator()
-    system = EdgeCloudDigitalTwinSystem()
+    system = PipelineTwinPlatform()
 
     for record in simulator.stream(iterations=iterations, interval_seconds=interval, scenario=scenario):
         processed, decision = system.ingest_event(record)

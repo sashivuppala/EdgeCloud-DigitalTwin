@@ -10,15 +10,15 @@ from fastapi.testclient import TestClient
 from api.app import app
 from simulator.generator import PipelineEventSimulator
 from utils.config import SystemConfig
-from utils.system import EdgeCloudDigitalTwinSystem
+from utils.system import PipelineTwinPlatform
 
 
-def build_system() -> EdgeCloudDigitalTwinSystem:
+def build_system() -> PipelineTwinPlatform:
     """Create an isolated system for tests."""
 
     runtime_dir = Path("test_runtime")
     runtime_dir.mkdir(exist_ok=True)
-    return EdgeCloudDigitalTwinSystem(
+    return PipelineTwinPlatform(
         SystemConfig(database_path=runtime_dir / f"{uuid4().hex}.db")
     )
 
