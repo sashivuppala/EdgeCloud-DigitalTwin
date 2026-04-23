@@ -34,7 +34,6 @@ SCENARIOS: dict[str, ScenarioProfile] = {
     "publication_failure_spike": ScenarioProfile("publication_failure_spike", (45, 140), (80.0, 210.0), (110.0, 260.0), (120.0, 420.0), (1, 5), 0.30),
     "retry_storm": ScenarioProfile("retry_storm", (120, 260), (140.0, 330.0), (200.0, 420.0), (120.0, 260.0), (3, 8), 0.28),
     "downstream_ack_delay": ScenarioProfile("downstream_ack_delay", (40, 130), (90.0, 230.0), (90.0, 240.0), (450.0, 1100.0), (1, 3), 0.18),
-    "mixed_enterprise_load": ScenarioProfile("mixed_enterprise_load", (20, 240), (70.0, 320.0), (70.0, 500.0), (40.0, 620.0), (0, 5), 0.20),
 }
 
 

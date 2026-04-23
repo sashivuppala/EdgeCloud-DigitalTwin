@@ -35,7 +35,6 @@ class EdgeCloudDigitalTwinSystem:
                 "transformation_bottleneck",
                 "publication_failure_spike",
                 "retry_storm",
-                "mixed_enterprise_load",
             }
             or event.xml_complexity >= self.config.xml_complexity_threshold
             or event.transform_latency_ms >= self.config.transform_latency_threshold_ms

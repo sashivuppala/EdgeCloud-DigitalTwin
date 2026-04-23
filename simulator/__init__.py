@@ -1,1 +1,1 @@
-"""Simulation utilities for generating synthetic telemetry."""
+"""Simulation utilities for generating enterprise workflow events."""

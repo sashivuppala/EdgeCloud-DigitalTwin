@@ -14,11 +14,11 @@ This project demonstrates how an enterprise document and event-processing platfo
 - the orchestration engine decides where work should be processed based on backlog, latency, retry pressure, and complexity
 - the API, database, and dashboard provide visibility into pipeline health
 
-This architecture is conceptually inspired by large-scale document and workflow processing platforms where validation, transformation, publishing, acknowledgement, and retry behavior must be monitored continuously.
+This architecture is designed for large-scale document and workflow processing platforms where validation, transformation, publishing, acknowledgement, and retry behavior must be monitored continuously.
 
 ## Domain Refactoring Note
 
-The architecture of the project remains the same as the earlier edge-cloud digital twin implementation, but the domain has been refocused from generic telemetry processing to enterprise workflow and document processing. The simulator, digital twin, orchestration logic, dashboard, and documentation now model distributed pipeline operations instead of device-style telemetry.
+The architecture of the project remains the same as the earlier edge-cloud digital twin implementation, but the domain has been refocused to enterprise workflow and document processing. The simulator, digital twin, orchestration logic, dashboard, and documentation now model distributed pipeline operations consistently.
 
 ## Features
 
@@ -79,7 +79,6 @@ The simulator supports these enterprise pipeline scenarios:
 - `publication_failure_spike`
 - `retry_storm`
 - `downstream_ack_delay`
-- `mixed_enterprise_load`
 
 ## Edge vs Cloud Processing
 

@@ -51,7 +51,7 @@ The system architecture was intentionally preserved while the domain model was r
 
 ### Updated domain concepts
 
-Old sensor-style telemetry concepts were replaced with enterprise workflow concepts such as:
+The previous device-style workflow fields were replaced with enterprise workflow concepts such as:
 
 - `document_size_kb`
 - `xml_complexity`
@@ -139,7 +139,6 @@ Scenarios include:
 - `publication_failure_spike`
 - `retry_storm`
 - `downstream_ack_delay`
-- `mixed_enterprise_load`
 
 ### `edge/processor.py`
 
@@ -192,7 +191,6 @@ Persist:
 Exposes:
 
 - `POST /pipeline-event`
-- `POST /sensor-data` as a compatibility alias
 - `GET /status`
 - `GET /metrics`
 - `GET /health`
@@ -337,7 +335,7 @@ python run_simulation.py --scenario retry_storm --iterations 40
 ### Run through the API
 
 ```bash
-python run_simulation.py --scenario mixed_enterprise_load --iterations 30 --use-api
+python run_simulation.py --scenario publication_failure_spike --iterations 30 --use-api
 ```
 
 ### Launch the dashboard
