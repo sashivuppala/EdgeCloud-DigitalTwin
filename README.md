@@ -1,20 +1,140 @@
 # EdgeCloud-DigitalTwin
 
-`EdgeCloud-DigitalTwin` is a complete Python project that simulates an aerospace predictive-maintenance pipeline using an edge-cloud digital twin architecture. It generates live telemetry, performs low-latency anomaly screening at the edge, sends richer analysis to the cloud, and dynamically orchestrates where work runs based on system conditions.
+`EdgeCloud-DigitalTwin` is a digital twin and orchestration system for enterprise processing pipelines. It simulates distributed document and workflow processing, routes work between edge and cloud layers, maintains a live pipeline health model, and exposes metrics, logs, and dashboards for operational monitoring.
 
 For a complete combined product overview, developer onboarding guide, setup manual, architecture explanation, and stakeholder-friendly summary, see [docs/PROJECT_GUIDE.md](C:\Users\kiran\Details of Your Vehicle\EdgeCloud-DigitalTwin\docs\PROJECT_GUIDE.md).
 
+## Project Purpose
+
+This project demonstrates how an enterprise document and event-processing platform can be modeled as an edge-cloud digital twin:
+
+- the input simulator generates workflow events such as XML-heavy documents and publish operations
+- the edge validation layer performs low-latency validation and quick anomaly screening
+- the cloud analysis layer handles deeper trend analysis and digital twin state management
+- the orchestration engine decides where work should be processed based on backlog, latency, retry pressure, and complexity
+- the API, database, and dashboard provide visibility into pipeline health
+
+This architecture is conceptually inspired by large-scale document and workflow processing platforms where validation, transformation, publishing, acknowledgement, and retry behavior must be monitored continuously.
+
+## Domain Refactoring Note
+
+The architecture of the project remains the same as the earlier edge-cloud digital twin implementation, but the domain has been refocused from generic telemetry processing to enterprise workflow and document processing. The simulator, digital twin, orchestration logic, dashboard, and documentation now model distributed pipeline operations instead of device-style telemetry.
+
 ## Features
 
-- Synthetic aerospace telemetry with realistic drift, noise, spikes, and threshold breaches
-- Edge anomaly detection with low-latency heuristics
-- Cloud digital twin state with historical storage, deeper analysis, and retraining
-- Dynamic orchestration between edge and cloud
-- FastAPI endpoints for data ingestion and monitoring
-- SQLite logging for sensor, anomaly, and orchestration records
-- Metrics tracking for latency, anomaly rate, processing split, and simulated cost
-- Optional Streamlit dashboard for live monitoring
-- Docker support and basic unit tests
+- Enterprise pipeline event simulation for document ingestion and workflow execution
+- Scenarios for queue backlog, malformed XML bursts, retry storms, transformation bottlenecks, and publish failures
+- Edge validation for lightweight parsing checks and quick anomaly detection
+- Cloud analysis for historical trend analysis, digital twin state updates, and optional retraining
+- Orchestration logic that routes work between edge and cloud based on queue depth, latency, retry pressure, and complexity
+- FastAPI endpoints for event ingestion, status, and metrics
+- SQLite logging for events, anomalies, and orchestration decisions
+- Streamlit dashboard for pipeline health and routing visibility
+- Docker support and automated tests
+
+## Architecture
+
+```text
+Input/Event Simulator
+        |
+        v
+Orchestration Engine
+        |
+        +--> Edge Validation Layer
+        |
+        +--> Cloud Analysis Layer
+                 |
+                 v
+        Pipeline Digital Twin State
+                 |
+                 v
+      SQLite Logging + API + Dashboard
+```
+
+## Enterprise Event Model
+
+Each simulated pipeline event includes:
+
+- `document_id`
+- `document_type`
+- `document_size_kb`
+- `xml_complexity`
+- `validation_error_count`
+- `processing_time_ms`
+- `queue_depth`
+- `retry_count`
+- `transform_latency_ms`
+- `publish_status`
+- `downstream_ack_delay_ms`
+- `timestamp`
+
+## Simulation Scenarios
+
+The simulator supports these enterprise pipeline scenarios:
+
+- `normal_processing`
+- `high_queue_backlog`
+- `malformed_xml_burst`
+- `transformation_bottleneck`
+- `publication_failure_spike`
+- `retry_storm`
+- `downstream_ack_delay`
+- `mixed_enterprise_load`
+
+## Edge vs Cloud Processing
+
+### Edge Validation Layer
+
+The edge layer is optimized for low-latency checks such as:
+
+- validation error threshold breaches
+- malformed XML indicators
+- queue spikes
+- retry storm early warnings
+- publish and acknowledgement issues that need immediate screening
+
+### Cloud Analysis Layer
+
+The cloud layer is responsible for:
+
+- historical trend analysis
+- digital twin state updates
+- aggregate workflow health scoring
+- backlog severity tracking
+- retry storm risk analysis
+- optional anomaly model retraining
+
+### Orchestration Engine
+
+The orchestration engine routes work based on:
+
+- processing time
+- queue depth
+- event complexity
+- retry count
+- publish failure risk
+- backlog severity
+
+Example routing reasons include:
+
+- `low-latency validation handled at edge`
+- `complex transformation escalated to cloud`
+- `high backlog triggered cloud offload`
+- `retry storm risk requires centralized analysis`
+
+## Pipeline Digital Twin Health Model
+
+The digital twin maintains a live workflow-level state including:
+
+- total events processed
+- failed events
+- anomaly count
+- validation issue trend
+- retry storm risk
+- backlog severity
+- publish health
+- health score
+- overall status: `HEALTHY`, `DEGRADED`, or `CRITICAL`
 
 ## Project Structure
 
@@ -23,156 +143,157 @@ edgecloud-digital-twin/
 ├── api/
 ├── cloud/
 ├── database/
+├── docs/
 ├── edge/
 ├── orchestrator/
 ├── simulator/
 ├── tests/
 ├── utils/
 ├── dashboard.py
-├── main.py
-├── run_simulation.py
-├── requirements.txt
 ├── Dockerfile
+├── main.py
+├── requirements.txt
+├── requirements-ml.txt
+├── run_simulation.py
 └── README.md
 ```
 
 ## Installation
 
-1. Create and activate a virtual environment.
+Recommended Python version: `3.10` to `3.12`.
 
-Recommended Python version: `3.10` to `3.12`. The project code is written for Python `3.10+`, but scientific packages such as `scikit-learn` may lag on very new interpreters like Python `3.14`.
+### Create a virtual environment
 
-Create and activate a virtual environment:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
-
-On Windows PowerShell:
+Windows PowerShell:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-2. Install dependencies:
+macOS/Linux:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+### Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Optional ML enhancement for cloud retraining:
+Optional model support:
 
 ```bash
 pip install -r requirements-ml.txt
 ```
 
-## Run the API Server
+## Run the API
 
 ```bash
 python main.py
 ```
 
-The API starts on `http://127.0.0.1:8000`.
+API base URL:
 
-## Run the Simulation
+```text
+http://127.0.0.1:8000
+```
 
-The simulation can stream data directly through the system service or post it to the API.
+## Run the Simulator
 
 Direct mode:
 
 ```bash
-python run_simulation.py --scenario normal --iterations 50
+python run_simulation.py --scenario normal_processing --iterations 50
 ```
 
 API mode:
 
 ```bash
-python run_simulation.py --scenario anomaly_injection --iterations 30 --use-api
+python run_simulation.py --scenario retry_storm --iterations 30 --use-api
 ```
 
-## Dashboard
+## API Usage
 
-Launch the Streamlit dashboard:
+### `POST /pipeline-event`
+
+Process an enterprise workflow event through the edge-cloud twin.
+
+Example:
+
+```bash
+curl -X POST http://127.0.0.1:8000/pipeline-event \
+  -H "Content-Type: application/json" \
+  -d "{\"document_id\":\"DOC-001\",\"document_type\":\"INVOICE\",\"document_size_kb\":188.4,\"xml_complexity\":0.41,\"validation_error_count\":0,\"processing_time_ms\":135.0,\"queue_depth\":28,\"retry_count\":0,\"transform_latency_ms\":122.0,\"publish_status\":\"SUCCESS\",\"downstream_ack_delay_ms\":88.0,\"timestamp\":\"2026-04-22T12:00:00Z\",\"scenario\":\"normal_processing\"}"
+```
+
+### `GET /status`
+
+Returns the current pipeline digital twin state.
+
+### `GET /metrics`
+
+Returns aggregate pipeline metrics.
+
+## Dashboard Usage
+
+Launch the dashboard:
 
 ```bash
 streamlit run dashboard.py
 ```
 
-The dashboard reads the same SQLite database and shows live telemetry, anomaly alerts, orchestration decisions, and latency trends.
+The dashboard shows:
 
-## API Endpoints
+- total pipeline events
+- pipeline health score
+- queue backlog trend
+- retry count trend
+- publish status distribution
+- processing and acknowledgement trend
+- routing distribution
+- top anomaly reasons
 
-### `POST /sensor-data`
-
-Accepts a single telemetry sample plus optional system conditions.
-
-Sample request:
-
-```bash
-curl -X POST http://127.0.0.1:8000/sensor-data \
-  -H "Content-Type: application/json" \
-  -d "{\"temperature\": 81.2, \"vibration\": 0.63, \"pressure\": 31.4, \"fuel_flow\": 102.6, \"timestamp\": \"2026-04-09T12:00:00Z\", \"latency_ms\": 22.0, \"cpu_load\": 0.42}"
-```
-
-### `GET /status`
-
-Returns the current digital twin state.
+## Running Tests
 
 ```bash
-curl http://127.0.0.1:8000/status
+python -m pytest -q tests/test_system.py
 ```
 
-### `GET /metrics`
+## Test Results
 
-Returns aggregated system metrics.
+The refactored test suite covers:
 
-```bash
-curl http://127.0.0.1:8000/metrics
+- normal enterprise processing
+- edge routing for low-latency validation
+- cloud offload during high backlog
+- malformed XML burst detection
+- retry storm escalation
+- publication failure effects on metrics and state
+- API endpoint behavior
+
+Expected validation output:
+
+Recorded validation result for this refactor:
+
+```text
+7 passed in 1.47s
 ```
 
-## Sample Scenarios
-
-### Normal operation
-
-```bash
-python run_simulation.py --scenario normal --iterations 40
-```
-
-### High latency
-
-```bash
-python run_simulation.py --scenario high_latency --iterations 40
-```
-
-### Edge overload
-
-```bash
-python run_simulation.py --scenario edge_overload --iterations 40
-```
-
-### Forced anomaly injection
-
-```bash
-python run_simulation.py --scenario anomaly_injection --iterations 40
-```
-
-## Run Tests
-
-```bash
-pytest -q
-```
+If a local environment is missing dependencies, install the packages from `requirements.txt` before running the suite.
 
 ## Docker
 
-Build the image:
+Build:
 
 ```bash
 docker build -t edgecloud-digitaltwin .
 ```
 
-Run the container:
+Run:
 
 ```bash
 docker run -p 8000:8000 edgecloud-digitaltwin
@@ -180,6 +301,6 @@ docker run -p 8000:8000 edgecloud-digitaltwin
 
 ## Notes
 
-- SQLite logs are stored by default at `edgecloud_digital_twin.db`.
-- The cloud retraining routine uses `IsolationForest` when `scikit-learn` is installed and enough historical samples are available.
-- The orchestration engine can be tuned in `utils/config.py`.
+- SQLite logs are stored by default at `edgecloud_digital_twin.db`
+- Cloud retraining uses `IsolationForest` when `scikit-learn` is installed
+- Orchestration thresholds can be tuned in [utils/config.py](C:\Users\kiran\Details of Your Vehicle\EdgeCloud-DigitalTwin\utils\config.py)

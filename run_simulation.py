@@ -1,4 +1,4 @@
-"""Run live telemetry scenarios against the digital twin system."""
+"""Run live enterprise pipeline scenarios against the digital twin system."""
 
 from __future__ import annotations
 
@@ -12,12 +12,12 @@ from utils.system import EdgeCloudDigitalTwinSystem
 def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
 
-    parser = argparse.ArgumentParser(description="Run edge-cloud digital twin simulations.")
-    parser.add_argument("--scenario", choices=sorted(SCENARIOS.keys()), default="normal")
+    parser = argparse.ArgumentParser(description="Run enterprise pipeline twin simulations.")
+    parser.add_argument("--scenario", choices=sorted(SCENARIOS.keys()), default="normal_processing")
     parser.add_argument("--iterations", type=int, default=25)
     parser.add_argument("--interval", type=float, default=0.0)
     parser.add_argument("--use-api", action="store_true", help="Send records to the FastAPI server instead of direct ingestion.")
-    parser.add_argument("--api-url", default="http://127.0.0.1:8000/sensor-data")
+    parser.add_argument("--api-url", default="http://127.0.0.1:8000/pipeline-event")
     return parser.parse_args()
 
 
@@ -28,17 +28,20 @@ def run_direct(scenario: str, iterations: int, interval: float) -> None:
     system = EdgeCloudDigitalTwinSystem()
 
     for record in simulator.stream(iterations=iterations, interval_seconds=interval, scenario=scenario):
-        processed, decision = system.ingest_sensor_data(record)
+        processed, decision = system.ingest_event(record)
         pprint(
             {
                 "timestamp": record.timestamp.isoformat(),
+                "document_id": record.document_id,
+                "document_type": record.document_type,
                 "scenario": scenario,
                 "route": decision.location,
                 "reason": decision.reason,
                 "anomaly": processed.anomaly_detected,
                 "anomaly_types": processed.anomaly_types,
-                "latency_ms": record.latency_ms,
-                "cpu_load": record.cpu_load,
+                "queue_depth": record.queue_depth,
+                "processing_time_ms": record.processing_time_ms,
+                "publish_status": record.publish_status,
             }
         )
 

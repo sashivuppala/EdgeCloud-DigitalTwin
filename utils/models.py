@@ -1,4 +1,4 @@
-"""Pydantic models shared by the system."""
+"""Pydantic models shared by the enterprise pipeline twin."""
 
 from __future__ import annotations
 
@@ -14,23 +14,28 @@ def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
-class SensorRecord(BaseModel):
-    """Single telemetry sample emitted by the simulator or API."""
+class PipelineEvent(BaseModel):
+    """Single pipeline event emitted by the simulator or API."""
 
-    temperature: float
-    vibration: float
-    pressure: float
-    fuel_flow: float
+    document_id: str
+    document_type: str
+    document_size_kb: float
+    xml_complexity: float
+    validation_error_count: int
+    processing_time_ms: float
+    queue_depth: int
+    retry_count: int
+    transform_latency_ms: float
+    publish_status: str
+    downstream_ack_delay_ms: float
     timestamp: datetime = Field(default_factory=utc_now)
-    latency_ms: float = 20.0
-    cpu_load: float = 0.35
-    scenario: str = "normal"
+    scenario: str = "normal_processing"
 
 
 class ProcessedRecord(BaseModel):
-    """Edge-processed telemetry plus anomaly classification."""
+    """Edge-processed pipeline event plus anomaly classification."""
 
-    sensor: SensorRecord
+    event: PipelineEvent
     anomaly_detected: bool
     anomaly_score: float
     anomaly_types: list[str]
@@ -44,24 +49,29 @@ class OrchestrationDecision(BaseModel):
 
     location: str
     reason: str
-    latency_ms: float
-    cpu_load: float
+    processing_time_ms: float
+    queue_depth: int
     requires_complex_analysis: bool
     decided_at: datetime = Field(default_factory=utc_now)
 
 
 class DigitalTwinState(BaseModel):
-    """Aggregated aircraft/system state maintained in the cloud."""
+    """Aggregated enterprise pipeline state maintained in the cloud."""
 
-    status: str = "healthy"
+    status: str = "HEALTHY"
     last_updated: datetime = Field(default_factory=utc_now)
+    total_events_processed: int = 0
+    failed_events: int = 0
     anomaly_count: int = 0
-    total_samples: int = 0
+    validation_issue_trend: float = 0.0
+    retry_storm_risk: float = 0.0
+    backlog_severity: float = 0.0
+    publish_health: float = 1.0
     health_score: float = 1.0
-    moving_average_temperature: float = 0.0
-    moving_average_vibration: float = 0.0
-    moving_average_pressure: float = 0.0
-    moving_average_fuel_flow: float = 0.0
+    average_processing_time_ms: float = 0.0
+    average_queue_depth: float = 0.0
+    average_retry_count: float = 0.0
+    average_ack_delay_ms: float = 0.0
     last_anomaly_types: list[str] = Field(default_factory=list)
 
 
@@ -69,9 +79,11 @@ class MetricsSnapshot(BaseModel):
     """System metrics exposed by the API."""
 
     total_events: int
-    average_latency_ms: float
+    average_processing_time_ms: float
     anomaly_count: int
     anomaly_detection_rate: float
+    failed_events: int
+    publish_failure_count: int
     edge_processed: int
     cloud_processed: int
     edge_processing_pct: float

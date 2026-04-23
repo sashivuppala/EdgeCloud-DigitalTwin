@@ -1,4 +1,4 @@
-"""Repository helpers for persisting and loading telemetry data."""
+"""Repository helpers for persisting and loading pipeline event data."""
 
 from __future__ import annotations
 
@@ -11,32 +11,38 @@ from utils.models import OrchestrationDecision, ProcessedRecord
 
 
 class TelemetryRepository:
-    """SQLite-backed repository for telemetry, anomalies, and orchestration logs."""
+    """SQLite-backed repository for pipeline events, anomalies, and orchestration logs."""
 
     def __init__(self, connection: sqlite3.Connection) -> None:
         self.connection = connection
 
     def log_processed_record(self, record: ProcessedRecord) -> None:
-        """Persist sensor and anomaly data."""
+        """Persist pipeline event and anomaly data."""
 
-        sensor = record.sensor
+        event = record.event
         cursor = self.connection.cursor()
         cursor.execute(
             """
-            INSERT INTO sensor_data (
-                timestamp, temperature, vibration, pressure, fuel_flow,
-                latency_ms, cpu_load, scenario, processing_location
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO pipeline_events (
+                timestamp, document_id, document_type, document_size_kb, xml_complexity,
+                validation_error_count, processing_time_ms, queue_depth, retry_count,
+                transform_latency_ms, publish_status, downstream_ack_delay_ms, scenario, processing_location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
-                sensor.timestamp.isoformat(),
-                sensor.temperature,
-                sensor.vibration,
-                sensor.pressure,
-                sensor.fuel_flow,
-                sensor.latency_ms,
-                sensor.cpu_load,
-                sensor.scenario,
+                event.timestamp.isoformat(),
+                event.document_id,
+                event.document_type,
+                event.document_size_kb,
+                event.xml_complexity,
+                event.validation_error_count,
+                event.processing_time_ms,
+                event.queue_depth,
+                event.retry_count,
+                event.transform_latency_ms,
+                event.publish_status,
+                event.downstream_ack_delay_ms,
+                event.scenario,
                 record.processing_location,
             ),
         )
@@ -47,7 +53,7 @@ class TelemetryRepository:
             ) VALUES (?, ?, ?, ?, ?)
             """,
             (
-                sensor.timestamp.isoformat(),
+                event.timestamp.isoformat(),
                 int(record.anomaly_detected),
                 record.anomaly_score,
                 json.dumps(record.anomaly_types),
@@ -63,27 +69,29 @@ class TelemetryRepository:
         cursor.execute(
             """
             INSERT INTO orchestration_logs (
-                timestamp, location, reason, latency_ms, cpu_load, requires_complex_analysis
+                timestamp, location, reason, processing_time_ms, queue_depth, requires_complex_analysis
             ) VALUES (?, ?, ?, ?, ?, ?)
             """,
             (
                 decision.decided_at.isoformat(),
                 decision.location,
                 decision.reason,
-                decision.latency_ms,
-                decision.cpu_load,
+                decision.processing_time_ms,
+                decision.queue_depth,
                 int(decision.requires_complex_analysis),
             ),
         )
         self.connection.commit()
 
     def fetch_recent_sensor_data(self, limit: int = 100) -> pd.DataFrame:
-        """Return recent sensor history as a pandas DataFrame."""
+        """Return recent pipeline event history as a pandas DataFrame."""
 
         query = """
-        SELECT timestamp, temperature, vibration, pressure, fuel_flow, latency_ms, cpu_load,
+        SELECT timestamp, document_id, document_type, document_size_kb, xml_complexity,
+               validation_error_count, processing_time_ms, queue_depth, retry_count,
+               transform_latency_ms, publish_status, downstream_ack_delay_ms,
                scenario, processing_location
-        FROM sensor_data
+        FROM pipeline_events
         ORDER BY id DESC
         LIMIT ?
         """
@@ -112,7 +120,7 @@ class TelemetryRepository:
         """Return recent orchestration decisions."""
 
         query = """
-        SELECT timestamp, location, reason, latency_ms, cpu_load, requires_complex_analysis
+        SELECT timestamp, location, reason, processing_time_ms, queue_depth, requires_complex_analysis
         FROM orchestration_logs
         ORDER BY id DESC
         LIMIT ?

@@ -20,15 +20,20 @@ def initialize_database(connection: sqlite3.Connection) -> None:
     cursor = connection.cursor()
     cursor.executescript(
         """
-        CREATE TABLE IF NOT EXISTS sensor_data (
+        CREATE TABLE IF NOT EXISTS pipeline_events (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT NOT NULL,
-            temperature REAL NOT NULL,
-            vibration REAL NOT NULL,
-            pressure REAL NOT NULL,
-            fuel_flow REAL NOT NULL,
-            latency_ms REAL NOT NULL,
-            cpu_load REAL NOT NULL,
+            document_id TEXT NOT NULL,
+            document_type TEXT NOT NULL,
+            document_size_kb REAL NOT NULL,
+            xml_complexity REAL NOT NULL,
+            validation_error_count INTEGER NOT NULL,
+            processing_time_ms REAL NOT NULL,
+            queue_depth INTEGER NOT NULL,
+            retry_count INTEGER NOT NULL,
+            transform_latency_ms REAL NOT NULL,
+            publish_status TEXT NOT NULL,
+            downstream_ack_delay_ms REAL NOT NULL,
             scenario TEXT NOT NULL,
             processing_location TEXT NOT NULL
         );
@@ -47,8 +52,8 @@ def initialize_database(connection: sqlite3.Connection) -> None:
             timestamp TEXT NOT NULL,
             location TEXT NOT NULL,
             reason TEXT NOT NULL,
-            latency_ms REAL NOT NULL,
-            cpu_load REAL NOT NULL,
+            processing_time_ms REAL NOT NULL,
+            queue_depth INTEGER NOT NULL,
             requires_complex_analysis INTEGER NOT NULL
         );
         """

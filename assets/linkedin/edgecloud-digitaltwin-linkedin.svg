@@ -1,0 +1,89 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#09131F"/>
+      <stop offset="1" stop-color="#123C58"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#11283A"/>
+      <stop offset="1" stop-color="#17384F"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#35D0FF"/>
+      <stop offset="1" stop-color="#6EF7C8"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#02111D" flood-opacity="0.35"/>
+    </filter>
+    <style>
+      .title { font: 700 54px 'Segoe UI', Arial, sans-serif; fill: #F5FBFF; }
+      .subtitle { font: 400 24px 'Segoe UI', Arial, sans-serif; fill: #B7D8E8; }
+      .section { font: 700 22px 'Segoe UI', Arial, sans-serif; fill: #F5FBFF; }
+      .body { font: 400 20px 'Segoe UI', Arial, sans-serif; fill: #D9EEF8; }
+      .small { font: 400 18px 'Segoe UI', Arial, sans-serif; fill: #9BC5D7; }
+      .label { font: 700 18px 'Segoe UI', Arial, sans-serif; fill: #0C2130; }
+      .chip { font: 700 16px 'Segoe UI', Arial, sans-serif; fill: #0A2232; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1350" cy="120" r="220" fill="#1C5A78" fill-opacity="0.20"/>
+  <circle cx="145" cy="760" r="180" fill="#48D5E2" fill-opacity="0.10"/>
+
+  <rect x="70" y="60" width="1460" height="780" rx="34" fill="url(#card)" filter="url(#shadow)"/>
+
+  <rect x="100" y="95" width="280" height="44" rx="22" fill="url(#accent)"/>
+  <text x="126" y="124" class="label">PROJECT SHOWCASE</text>
+
+  <text x="100" y="200" class="title">EdgeCloud-DigitalTwin</text>
+  <text x="100" y="242" class="subtitle">Enterprise processing pipeline twin using an edge-cloud orchestration architecture</text>
+
+  <rect x="100" y="290" width="440" height="250" rx="24" fill="#0F2332" stroke="#2F6C88" stroke-width="2"/>
+  <text x="130" y="334" class="section">What It Does</text>
+  <text x="130" y="378" class="body">• Simulates enterprise workflow events in real time</text>
+  <text x="130" y="414" class="body">• Performs low-latency validation at the edge</text>
+  <text x="130" y="450" class="body">• Escalates deeper analysis to the cloud</text>
+  <text x="130" y="486" class="body">• Maintains pipeline digital twin health state</text>
+  <text x="130" y="522" class="body">• Exposes APIs, logs, and operational metrics</text>
+
+  <rect x="580" y="290" width="420" height="250" rx="24" fill="#0F2332" stroke="#2F6C88" stroke-width="2"/>
+  <text x="610" y="334" class="section">Architecture</text>
+  <text x="610" y="382" class="body">Event Simulator</text>
+  <text x="730" y="382" class="body">→</text>
+  <text x="770" y="382" class="body">Orchestrator</text>
+  <text x="610" y="422" class="body">Edge Validation</text>
+  <text x="770" y="422" class="body">→</text>
+  <text x="810" y="422" class="body">Cloud Analysis</text>
+  <text x="610" y="462" class="body">Twin State</text>
+  <text x="770" y="462" class="body">→</text>
+  <text x="810" y="462" class="body">API + Dashboard</text>
+  <text x="610" y="516" class="small">Dynamic routing based on backlog, retries, processing time, and complexity</text>
+
+  <rect x="1040" y="290" width="390" height="250" rx="24" fill="#0F2332" stroke="#2F6C88" stroke-width="2"/>
+  <text x="1070" y="334" class="section">Key Scenarios</text>
+  <text x="1070" y="378" class="body">• High queue backlog</text>
+  <text x="1070" y="414" class="body">• Malformed XML burst</text>
+  <text x="1070" y="450" class="body">• Retry storm and publish failures</text>
+  <text x="1070" y="486" class="body">• Transformation bottlenecks</text>
+  <text x="1070" y="522" class="small">Supports demos, experiments, and architecture discussions</text>
+
+  <rect x="100" y="585" width="1330" height="165" rx="24" fill="#0E2030" stroke="#2F6C88" stroke-width="2"/>
+  <text x="130" y="628" class="section">Tech Stack</text>
+  <rect x="130" y="652" width="120" height="34" rx="17" fill="url(#accent)"/>
+  <text x="157" y="674" class="chip">Python</text>
+  <rect x="265" y="652" width="120" height="34" rx="17" fill="url(#accent)"/>
+  <text x="290" y="674" class="chip">FastAPI</text>
+  <rect x="400" y="652" width="120" height="34" rx="17" fill="url(#accent)"/>
+  <text x="433" y="674" class="chip">NumPy</text>
+  <rect x="535" y="652" width="120" height="34" rx="17" fill="url(#accent)"/>
+  <text x="565" y="674" class="chip">Pandas</text>
+  <rect x="670" y="652" width="120" height="34" rx="17" fill="url(#accent)"/>
+  <text x="704" y="674" class="chip">SQLite</text>
+  <rect x="805" y="652" width="130" height="34" rx="17" fill="url(#accent)"/>
+  <text x="832" y="674" class="chip">Streamlit</text>
+  <rect x="950" y="652" width="120" height="34" rx="17" fill="url(#accent)"/>
+  <text x="986" y="674" class="chip">Docker</text>
+  <text x="130" y="725" class="small">Outcome: a modular, demo-ready enterprise workflow twin with edge-cloud orchestration</text>
+
+  <text x="100" y="805" class="small">Use this visual with the LinkedIn copy in docs/LINKEDIN_POST.md</text>
+</svg>
