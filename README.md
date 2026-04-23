@@ -1,4 +1,4 @@
-# EdgeCloud-DigitalTwin
+# EdgeCloud-DigitalTwin: Digital Twin for Enterprise Processing Pipelines
 
 `EdgeCloud-DigitalTwin` is a digital twin and orchestration system for enterprise processing pipelines. It simulates distributed document and workflow processing, routes work between edge and cloud layers, maintains a live pipeline health model, and exposes metrics, logs, and dashboards for operational monitoring.
 
@@ -27,7 +27,7 @@ The architecture of the project remains the same as the earlier edge-cloud digit
 - Edge validation for lightweight parsing checks and quick anomaly detection
 - Cloud analysis for historical trend analysis, digital twin state updates, and optional retraining
 - Orchestration logic that routes work between edge and cloud based on queue depth, latency, retry pressure, and complexity
-- FastAPI endpoints for event ingestion, status, and metrics
+- FastAPI endpoints for pipeline event ingestion, status, metrics, and health
 - SQLite logging for events, anomalies, and orchestration decisions
 - Streamlit dashboard for pipeline health and routing visibility
 - Docker support and automated tests

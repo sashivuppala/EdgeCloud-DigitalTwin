@@ -10,7 +10,7 @@ import pandas as pd
 from utils.models import OrchestrationDecision, ProcessedRecord
 
 
-class TelemetryRepository:
+class PipelineRepository:
     """SQLite-backed repository for pipeline events, anomalies, and orchestration logs."""
 
     def __init__(self, connection: sqlite3.Connection) -> None:
@@ -88,7 +88,7 @@ class TelemetryRepository:
         )
         self.connection.commit()
 
-    def fetch_recent_sensor_data(self, limit: int = 100) -> pd.DataFrame:
+    def fetch_recent_pipeline_events(self, limit: int = 100) -> pd.DataFrame:
         """Return recent pipeline event history as a pandas DataFrame."""
 
         query = """

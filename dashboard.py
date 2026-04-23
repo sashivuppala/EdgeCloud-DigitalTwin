@@ -23,25 +23,25 @@ col2.metric("Health Score", f"{state.health_score:.2f}")
 col3.metric("Total Pipeline Events", metrics.total_events)
 col4.metric("Avg Processing Time (ms)", f"{metrics.average_processing_time_ms:.2f}")
 
-sensor_frame = repository.fetch_recent_sensor_data(limit=200)
+event_frame = repository.fetch_recent_pipeline_events(limit=200)
 anomaly_frame = repository.fetch_recent_anomalies(limit=20)
 orchestration_frame = repository.fetch_recent_orchestration(limit=200)
 
-if sensor_frame.empty:
+if event_frame.empty:
     st.info("No data yet. Run `python run_simulation.py` or post a pipeline event to the API.")
 else:
     st.subheader("Queue Backlog and Retry Trend")
-    chart_frame = sensor_frame.set_index("timestamp")[["queue_depth", "retry_count"]]
+    chart_frame = event_frame.set_index("timestamp")[["queue_depth", "retry_count"]]
     st.line_chart(chart_frame)
 
     st.subheader("Processing and Acknowledgement Trend")
-    st.line_chart(sensor_frame.set_index("timestamp")[["processing_time_ms", "transform_latency_ms", "downstream_ack_delay_ms"]])
+    st.line_chart(event_frame.set_index("timestamp")[["processing_time_ms", "transform_latency_ms", "downstream_ack_delay_ms"]])
 
     st.subheader("Pipeline Health Score Trend")
-    st.line_chart(sensor_frame.set_index("timestamp")[["twin_health_score"]])
+    st.line_chart(event_frame.set_index("timestamp")[["twin_health_score"]])
 
     st.subheader("Publish Status Distribution")
-    publish_counts = sensor_frame["publish_status"].value_counts().rename_axis("publish_status").reset_index(name="count")
+    publish_counts = event_frame["publish_status"].value_counts().rename_axis("publish_status").reset_index(name="count")
     st.bar_chart(publish_counts.set_index("publish_status"))
 
     st.subheader("Routing Distribution")

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from database.db import get_connection, initialize_database
-from database.repository import TelemetryRepository
+from database.repository import PipelineRepository
 from edge.processor import EdgeProcessor
 from cloud.digital_twin import CloudDigitalTwin
 from orchestrator.engine import OrchestrationEngine
@@ -19,7 +19,7 @@ class EdgeCloudDigitalTwinSystem:
         self.config = config or SystemConfig()
         self.connection = get_connection(self.config.database_path)
         initialize_database(self.connection)
-        self.repository = TelemetryRepository(self.connection)
+        self.repository = PipelineRepository(self.connection)
         self.edge = EdgeProcessor(self.config)
         self.cloud = CloudDigitalTwin(self.config)
         self.orchestrator = OrchestrationEngine(self.config)
@@ -58,11 +58,6 @@ class EdgeCloudDigitalTwinSystem:
         self.metrics.record(processed)
 
         return processed, decision
-
-    def ingest_sensor_data(self, sensor: PipelineEvent) -> tuple[ProcessedRecord, OrchestrationDecision]:
-        """Backward-compatible wrapper preserved for existing call sites."""
-
-        return self.ingest_event(sensor)
 
     def get_state(self) -> DigitalTwinState:
         """Return the current cloud digital twin state."""

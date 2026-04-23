@@ -38,7 +38,7 @@ SCENARIOS: dict[str, ScenarioProfile] = {
 }
 
 
-class SensorDataSimulator:
+class PipelineEventSimulator:
     """Generate enterprise workflow events with realistic anomalies."""
 
     def __init__(self, seed: int = 7) -> None:

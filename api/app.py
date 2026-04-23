@@ -35,22 +35,6 @@ def ingest_pipeline_event(record: PipelineEvent) -> dict:
     }
 
 
-@app.post("/sensor-data")
-def ingest_sensor_data(record: PipelineEvent) -> dict:
-    """Backward-compatible alias for the existing endpoint style."""
-
-    processed, decision = system.ingest_event(record)
-    return {
-        "message": "pipeline event processed",
-        "processing_location": decision.location,
-        "routing_reason": decision.reason,
-        "anomaly_detected": processed.anomaly_detected,
-        "anomaly_types": processed.anomaly_types,
-        "pipeline_health": system.get_state().overall_pipeline_health_score,
-        "digital_twin_state": system.get_state().model_dump(mode="json"),
-    }
-
-
 @app.get("/status")
 def get_status() -> dict:
     """Return the current digital twin state."""

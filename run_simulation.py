@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pprint import pprint
 
-from simulator.generator import SCENARIOS, SensorDataSimulator
+from simulator.generator import PipelineEventSimulator, SCENARIOS
 from utils.system import EdgeCloudDigitalTwinSystem
 
 
@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
 def run_direct(scenario: str, iterations: int, interval: float) -> None:
     """Run a local simulation directly against the system class."""
 
-    simulator = SensorDataSimulator()
+    simulator = PipelineEventSimulator()
     system = EdgeCloudDigitalTwinSystem()
 
     for record in simulator.stream(iterations=iterations, interval_seconds=interval, scenario=scenario):
@@ -56,7 +56,7 @@ def run_via_api(scenario: str, iterations: int, interval: float, api_url: str) -
 
     import requests
 
-    simulator = SensorDataSimulator()
+    simulator = PipelineEventSimulator()
     for record in simulator.stream(iterations=iterations, interval_seconds=interval, scenario=scenario):
         response = requests.post(api_url, json=record.model_dump(mode="json"), timeout=15)
         response.raise_for_status()

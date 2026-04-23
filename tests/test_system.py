@@ -8,7 +8,7 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 
 from api.app import app
-from simulator.generator import SensorDataSimulator
+from simulator.generator import PipelineEventSimulator
 from utils.config import SystemConfig
 from utils.system import EdgeCloudDigitalTwinSystem
 
@@ -26,7 +26,7 @@ def build_system() -> EdgeCloudDigitalTwinSystem:
 def test_normal_operation_updates_metrics() -> None:
     """Normal enterprise processing should produce events and metrics."""
 
-    simulator = SensorDataSimulator(seed=1)
+    simulator = PipelineEventSimulator(seed=1)
     system = build_system()
 
     for _ in range(10):
@@ -40,7 +40,7 @@ def test_normal_operation_updates_metrics() -> None:
 def test_normal_processing_routes_to_edge() -> None:
     """Low-latency validation should remain at the edge."""
 
-    simulator = SensorDataSimulator(seed=2)
+    simulator = PipelineEventSimulator(seed=2)
     system = build_system()
     record = simulator.generate_record("normal_processing")
     record = record.model_copy(update={"processing_time_ms": 140.0, "queue_depth": 40, "xml_complexity": 0.32})
@@ -53,7 +53,7 @@ def test_normal_processing_routes_to_edge() -> None:
 def test_high_backlog_offloads_to_cloud() -> None:
     """High backlog should force cloud offload."""
 
-    simulator = SensorDataSimulator(seed=3)
+    simulator = PipelineEventSimulator(seed=3)
     system = build_system()
     record = simulator.generate_record("high_queue_backlog")
     record = record.model_copy(update={"queue_depth": 320, "processing_time_ms": 290.0})
@@ -66,7 +66,7 @@ def test_high_backlog_offloads_to_cloud() -> None:
 def test_malformed_xml_burst_increases_anomaly_count() -> None:
     """Malformed XML bursts should be detected at least once in a short run."""
 
-    simulator = SensorDataSimulator(seed=4)
+    simulator = PipelineEventSimulator(seed=4)
     system = build_system()
 
     for _ in range(20):
@@ -79,7 +79,7 @@ def test_malformed_xml_burst_increases_anomaly_count() -> None:
 def test_retry_storm_routes_to_cloud() -> None:
     """Retry storms should trigger centralized analysis."""
 
-    simulator = SensorDataSimulator(seed=5)
+    simulator = PipelineEventSimulator(seed=5)
     system = build_system()
     record = simulator.generate_record("retry_storm")
     record = record.model_copy(update={"retry_count": 7, "queue_depth": 150})
@@ -92,7 +92,7 @@ def test_retry_storm_routes_to_cloud() -> None:
 def test_publication_failure_impacts_metrics() -> None:
     """Failed publications should surface in metrics and twin state."""
 
-    simulator = SensorDataSimulator(seed=6)
+    simulator = PipelineEventSimulator(seed=6)
     system = build_system()
     record = simulator.generate_record("publication_failure_spike")
     record = record.model_copy(update={"publish_status": "FAILED", "retry_count": 5})
